@@ -3,11 +3,11 @@ En este repositorio se encuentran los desarrollos de los laboratorios correspond
 
 Se incluyen:
 
-Informes detallados
-Scripts de cálculos auxiliares
-Circuitos de simulación en LTSpice
-Modelos SPICE de los amplificadores
-Informe en TeX
+- Informes detallados  
+- Scripts de cálculos auxiliares  
+- Circuitos de simulación en LTSpice  
+- Modelos SPICE de los amplificadores  
+- Informe en TeX  
 
 El grupo de trabajo que se encargó de esta serie de cálculos y desarrollos está conformado por:
 
