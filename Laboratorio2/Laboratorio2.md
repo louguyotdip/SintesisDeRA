@@ -1,21 +1,20 @@
-# Trabajo Práctico de Laboratorio Nº2
-# AO Real: Errores.
+# Trabajo Práctico de Laboratorio Nº2 - AO Real: Errores.
 ## OBJETIVOS
 Introducir al estudiante en el diseño, armado, medición y análisis de circuitos
 amplificadores lineales, teniendo en cuenta las fuentes de error del AO real, y como se
 relacionan con las condiciones de entorno del circuito.  
 ## DESARROLLO
-CIRCUITO I: El circuito sumador siguiente debe ser diseñado para las siguientes condiciones de contorno:
-![alt text](image.png)  
+CIRCUITO I: El circuito sumador siguiente debe ser diseñado para las siguientes condiciones de contorno:  
+
 - Amplificador Operacional LM741 o LM324
 - Alimentación Vcc = 10V, Vss = -10V
 - Ganancia en banda media A=Vo/V1 y A=Vo/V2 debe ser igual a 30 veces.
 - Zi del amplificador no puede alterar o cargar la fuente de señal, es decir, Ri << Zi1 y
 Zi2. (al menos 10 veces)
 - Usar Resistencias <=1MΩ  
-Las fuentes V1 y V2 deben considerarse en las condiciones 1.A y 1.B
-![alt text](image-1.png)
-PARÁMETROS/RELACIONES A ANALIZAR:  
+Las fuentes V1 y V2 deben considerarse en las condiciones 1.A y 1.B  
+
+PARÁMETROS / RELACIONES A ANALIZAR:  
 ANALÍTICO:  
 1.1. Vo = f(V1,V2)
 1.2. Errores DC
