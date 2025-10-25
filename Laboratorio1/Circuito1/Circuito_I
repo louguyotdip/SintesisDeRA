@@ -1,0 +1,136 @@
+\documentclass{article}
+\usepackage[spanish]{babel}
+\usepackage{amssymb, amsmath} %Paquetes matemáticos de la American Mathematical Society
+\usepackage{graphicx}
+\usepackage[%
+    a4paper,       % Tamaño de papel
+    left=2.5cm,    % Margen izquierdo
+    right=2.5cm,   % Margen derecho
+    top=3cm,       % Margen superior
+    bottom=3cm,    % Margen inferior
+    footskip=1.5cm % Espacio para el pie de página
+]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead[\leftmark]{Síntesis de Redes Activas - Laboratorio 1}
+\rfoot[]{\thepage}
+\begin{document}
+ \section{Circuito N° 1}
+
+\subsection{Esquemático y datos}
+
+Se realiza el análisis teórico del circuito que se muestra en la siguiente figura: 
+  \begin{figure}[h!]
+     \centering
+	 \includegraphics[width=0.6\linewidth]{esquematico1.png}
+	 \caption{Esquematico del circuito N° 1}
+	 \label{fig:esquematico1}
+  \end{figure}
+Este circuito consiste en un arreglo de dos amplificadores operacionales cuya función es rechazar la señal común y amplificar la diferencial.
+\vspace{1em}
+Datos:
+
+\begin{itemize}
+  \item Amplificador operacional: LM324
+  \item $V_{cc} = 10 \, \text{[V]}$
+  \item $V_{ss} = -10 \, \text{[V]}$
+  \item $R_1 = R_2 = R_3 = R_4 = R_5 = R$
+\end{itemize}
+
+\subsection{Análisis teórico}
+Para facilitar el analisis del circuito, se considerará a ambos AO ideales, es decir $V^+=V ^-$ y $A_d=\infty$, se analizarán los AO por separado, y luego se aplicará el teorema de la superposición.
+
+\vspace{1em}
+
+\textbf{Caso $V_2=0$, y $V_1 \neq 0$} 
+\vspace{1em}
+
+Pasivada la fuente $V_2$ y analizando las corrientes del nodo de $V^-$ del primer amplificador, resultan las siguientes ecuaciones:
+
+\[-I_1 = I_2 + I_3\]
+
+Esto es: 
+
+\[-\frac{V_1}{R_4} + \frac{V_{o1}-V_1}{R_2} - \frac{V_1}{R_1} = 0\]
+
+\[\frac{V_1}{R_4 + R_2 + R_1}      = \frac{V_{o1}}{R_2}\]
+
+Como $R_1 = R_2 = R_4 = R$
+
+\[V_1\frac{R^2 +R^2 + R^2}{R^3} = \frac{V_{o1}}{R} \]
+      
+\[V_1 \frac{3R^3}{R^3} = V_{o1} \]
+\[3V_1 = V_{o1}\]
+
+Luego, haciendo el mismo análisis para calcular $V_{o2}$ respecto a $V_1$ en el nodo de $V^-$ del segundo amplificador operacional:
+
+\[-I_5 = I_4 + I_3\]
+
+\[\frac{V_{o1}}{R_5} + \frac{V_{o2}}{R_3} + \frac{V_1}{R_1} = 0\]
+
+\[\frac{3V_1}{R_5} + \frac{V_{o2}}{R_3} + \frac{V_1}{R_1} = 0\]
+
+\[\frac{4V_1}{R} + \frac{V_{o2}}{R} = 0\]
+
+\[\Rightarrow \quad -4V_1 = V_{o2} \]
+
+\vspace{1em}
+
+\textbf{Caso $V_1 = 0$ y $V_2 \neq 0$} 
+
+\vspace{1em}
+
+Utilizando la ley de las corrientes en los nodos en la primer etapa:
+
+\[I_{R2} + I_{R1} = 0 \]
+
+\[\frac{V_{01}}{R_2} + \frac{V_2}{R_1} = 0 \]
+
+Como se mencionó antes, todas las resistencias son iguales, por lo que resulta:
+
+\[{V_{01}} = - V_2 \]
+
+Analizando la entrada negativa del segundo AO, las corrientes son definidas:
+
+\[\frac{V_o-V_2}{R_3} - \frac{V_{o1}-V_2}{R_5}+\frac{V_2}{R_1} = 0 \]
+
+\[ V_{o2} - V_2 - V_2 + V_{o1} - V_2 = 0 \]
+
+\[V_{o2} - 4V_2 = 0 \]
+
+\[V_{o2}=4V_2\]
+
+Aplicando la técnica de superposición:
+
+\[V_o = 4V_2  - 4V_1 \]
+      
+\subsection{Análisis de modo diferencial }
+
+Considerando $V_d = V_2 -V_1$ y la tensión de salida calculada anteriormente, resulta
+
+\[ V_o = 4V_d \]
+      
+\subsection{Análisis de modo común}
+
+Sabiendo que $V_c = \frac{V_1 + V_2}{2} $, entonces:
+
+\[ V_2 = \frac{V_{o2}}{4}; \quad  V_1 = -\frac{V_o2}{4} \]
+
+\[ \frac{V_2 +V_1}{2}(4-4) =V_{o2} \]
+
+\[V_{o2} = 0 \]
+
+\subsection{RRMC}
+Recordando que $RRMC = \frac{A_d}{A_c}$ y, con el análisis realizado de ambos modos, se puede observar que el circuito rechaza por completo el modo común y amplifica el modo diferencial. 
+Por lo tanto $RRMC = \infty$
+
+\subsection{Impedancias}
+
+Considerando que $Z_i = \frac{V_{in}}{I_{in}} $ y que se tratan de AO ideales, las corrientes de entrada de ambos amplificadores es 0, entonces
+
+\[Z_{i1}=Z_{i2} = \infty \]
+
+\subsection{Simulación y mediciones de laboratorio}
+
+Se realiza la simulación del circuito en el software LTSpice:
