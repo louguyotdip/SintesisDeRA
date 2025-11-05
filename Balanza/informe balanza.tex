@@ -1,0 +1,548 @@
+% --- Preámbulo ---
+\documentclass[12pt, a4paper]{article} % Tipo de documento
+
+% === PAQUETES ===
+\usepackage[utf8]{inputenc} % Acentos y ñ
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel} % Idioma español
+
+\usepackage{amsmath}     % Funciones matemáticas avanzadas
+\usepackage{amssymb}     % Símbolos matemáticos (como \Omega)
+\usepackage{textcomp}    % Para símbolos como \textdegree y \textmu
+\usepackage{graphicx}    % Para incluir imágenes
+\usepackage{caption}     % Personalizar pies de foto
+\usepackage{geometry}    % Para márgenes
+\usepackage{parskip}     % Separa párrafos con espacio, sin sangría
+\usepackage{float}       % Para forzar la posición de figuras con [H]
+\usepackage{array}       % Para tablas más avanzadas
+
+% === CONFIGURACIÓN DE PÁGINA ===
+\geometry{a4paper, margin=2.5cm} % Márgenes
+\setlength{\parskip}{1em}      % Espacio entre párrafos
+
+%\documentclass{report}
+\usepackage{graphicx}
+
+\begin{document}
+	
+	\begin{titlepage}
+		
+		
+		\thispagestyle{empty}
+		
+		\begin{center}
+			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% agregar logo facu
+		%\includegraphics[width=11cm]{img\unc_logo.png} 
+			\vspace{10pt}
+			
+		%	\includegraphics[width=12cm]{img\fcefyn_logo.png}
+		%	\\[1cm]
+		%	\vspace{5pt}
+			{ \LARGE SÍNTESIS DE REDES ACTIVAS\\[0.6cm] }
+			{\bfseries\large Proyecto
+				\\[0.8cm]
+				\large “Diseño de una balanza de uso comercial”}
+			\\[0.5cm]
+			\vspace{35pt}
+			\begin{table}[!h]
+				
+				\centering
+				\begin{tabular}{ll}
+					\multicolumn{1}{c}{Integrantes:} \\
+					Angeloni, Luciano\\
+					Guyot, Lourdes \\
+					Schreiner, Federico
+				\end{tabular}
+			\end{table}
+			\vspace{15pt}
+			\begin{table}[!h]
+				\centering
+				
+				\begin{tabular}{ll}
+					\multicolumn{1}{c}{Docentes} & Ing. Pablo Ferreyra \\
+					& Ing. César Reale
+				\end{tabular}
+			\end{table}
+			\vspace{5pt}
+			\vfill
+			Córdoba, República Argentina\\
+			2025\\
+		\end{center}
+		
+	\end{titlepage}
+
+
+% --- Inicio del Documento ---
+	
+	\tableofcontents % Añade un índice
+	\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+% --- SECCIÓN 1: INTRODUCCIÓN ---
+\section{Introducción}
+
+\subsection{Objetivo}
+El presente trabajo consiste en el desarrollo y diseño de la etapa analógica de una balanza comercial de precisión, aplicando los conceptos teóricos y prácticos adquiridos en la materia Síntesis de Redes Activas.
+
+Este trabajo tiene 2 partes que se unen en un mismo objetivo: 
+\begin{enumerate}
+	\item \textbf{Diseño Técnico:} Desarrollar un sistema de acondicionamiento de señal para una celda de carga (galgas extensiométricas) que garantice la precisión requerida, analizando y minimizando las fuentes de error (offset, deriva térmica, etc.).
+	\item \textbf{Viabilidad Comercial:} Implementar dicho diseño utilizando componentes que aseguren un costo de producción mínimo, permitiendo que el producto final sea competitivo en el mercado nacional frente a marcas establecidas como Systel, Teraoka, Toledo, Avery, Kretz, etc.
+\end{enumerate}
+Se busca, por tanto, una solución de ingeniería que equilibre los objetivos tecnicos con la viabilidad económica del proyecto.
+
+\subsection{Especificaciones Técnicas}
+El diseño de la balanza debe satisfacer las siguientes especificaciones técnicas para poder competir en el mercado:
+\begin{itemize}
+	\item \textbf{Resolución (Apreciación):} 1\,g.
+	\item \textbf{Rango máximo (Capacidad):} 2\,kg.
+	\item \textbf{Temperatura de funcionamiento:} 0\,\textdegree C a 40\,\textdegree C.
+\end{itemize}
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+% --- SECCIÓN 2: MARCO TEÓRICO ---
+\section{Marco Teórico}
+
+\subsection{Principio de Detección: Celda de Carga}
+El componente central para la medición del peso es la \textbf{celda de carga}. Se trata de un transductor de fuerza, es decir, un dispositivo que convierte la energía mecánica (una fuerza o peso aplicado) en una señal eléctrica proporcional.
+
+Este dispositivo basa su funcionamiento en \textbf{galgas extensiométricas} (o \textit{strain gauges}). Estas son esencialmente resistencias eléctricas muy finas (laminadas o de alambre) que se encuentran adheridas de forma solidaria a la estructura interna de la celda, un cuerpo metálico (generalmente aluminio) diseñado para deformarse de manera controlada y predecible.
+
+Cuando se aplica un peso sobre la balanza, la estructura metálica de la celda sufre una deformación elástica (siguiendo la Ley de Hook). Esta deformación estira o comprime las galgas. Dicho cambio geométrico (variación en longitud y sección) altera su resistencia eléctrica de manera lineal y proporcional a la fuerza aplicada.
+
+\begin{figure}[H]
+	\centering
+	% \includegraphics[width=0.8\linewidth]{ruta/a/imagen_flexion_celda.png}
+	\caption{Esquema de funcionamiento de una celda de carga. La flexión por el peso (CARGADO) estira y comprime las galgas internas.}
+	\label{fig:celda}
+\end{figure}
+
+\subsection{Circuito de Medición: Puente de Wheatstone}
+El cambio de resistencia en una galga individual es extremadamente pequeño, del orden de una fracción de ohmio. Para poder medir esta minúscula variación con precisión y, a la vez, compensar efectos no deseados como la temperatura (que también altera la resistencia), las galgas se integran en una configuración de \textbf{Puente de Wheatstone}.
+
+Este circuito eléctrico es ideal para detectar desbalances mínimos entre sus ramas. En este proyecto, se asume una configuración de \textbf{Medio Puente} (Half-Bridge), donde dos galgas son activas (una se estira, \(R_3\), y la opuesta se comprime, \(R_2\)) y las otras dos son resistencias pasivas de referencia (\(R_1, R_4\)).
+
+\begin{figure}[H]
+	\centering
+	% \includegraphics[width=0.7\linewidth]{ruta/a/imagen_puente_wheatstone.png}
+	\caption{Configuración de Medio Puente. \(R_2\) y \(R_3\) son las galgas activas.}
+	\label{fig:puente}
+\end{figure}
+
+La señal eléctrica de interés es la tensión diferencial \(V_S\) (o \(V_{AB}\)) entre los terminales de salida del puente:
+\begin{equation}
+	V_S = V_B - V_A = V_{cc} \left( \frac{R_3}{R_2 + R_3} - \frac{R_4}{R_1 + R_4} \right)
+\end{equation}
+Si consideramos las resistencias pasivas \(R_1 = R_4 = R_o\) y las galgas activas como \(R_2 = R_o(1-x)\) y \(R_3 = R_o(1+x)\), donde \(x\) es el factor de deformación proporcional al peso, la ecuación se simplifica notablemente:
+\begin{equation}
+	V_S = V_{cc} \left( \frac{R_o(1+x)}{R_o(1-x) + R_o(1+x)} - \frac{R_o}{R_o + R_o} \right) = V_{cc} \left( \frac{1+x}{2} - \frac{1}{2} \right)
+\end{equation}
+Obteniendo así la tensión de salida diferencial, que es la señal que procesaremos:
+\begin{equation}
+	V_S = V_{cc} \frac{x}{2}
+	\label{eq:puente_simple}
+\end{equation}
+Esta tensión \(V_S\) es una señal de muy bajo nivel (del orden de milivolts) y es la entrada a nuestra etapa de acondicionamiento.
+
+\subsection{Acondicionamiento: El Amplificador de Instrumentación}
+
+La señal \(V_S\) que entrega el puente (ver Ecuación \ref{eq:puente_simple}) no es apta para ser digitalizada directamente por el ADC del microcontrolador. Presenta dos problemas fundamentales que deben ser resueltos:
+
+\begin{enumerate}
+	\item \textbf{Baja Amplitud:} La señal útil diferencial es muy débil, del orden de 5\,mV a 20\,mV a fondo de escala. Un ADC necesita una señal que ocupe un rango de varios volts (ej. 0V a 5V) para una correcta digitalización.
+	\item \textbf{Alta Tensión de Modo Común (TMC):} Los 5\,mV de señal diferencial no están referenciados a tierra (0V), sino que "flotan" sobre una tensión de DC elevada, típicamente la mitad de la alimentación (\(V_{cc}/2 \approx 2.5V\)). El ADC debe ignorar estos 2.5V y amplificar \textit{únicamente} la pequeña diferencia.
+\end{enumerate}
+
+Por ende, se necesita una etapa de \textbf{Acondicionamiento de Señal} intermedia. La solución ideal debe cumplir con tres criterios de forma simultánea:
+\begin{itemize}
+	\item \textbf{Alta Ganancia Diferencial (\(A_d\)):} Para llevar la señal de milivolts al rango de volts.
+	\item \textbf{Alto Rechazo al Modo Común (CMRR):} Para anular la TMC de 2.5V y amplificar exclusivamente la diferencia de potencial.
+	\item \textbf{Alta Impedancia de Entrada (\(Z_{in}\)):} Para no drenar corriente del Puente de Wheatstone, lo cual alteraría su precisión.
+\end{itemize}
+
+El circuito que satisface estas tres condiciones es el \textbf{Amplificador de Instrumentación} (In-Amp). En lugar de un chip integrado, se opta por la implementación discreta clásica, que utiliza tres amplificadores operacionales.
+
+\begin{figure}[H]
+	\centering
+	% \includegraphics[width=0.9\linewidth]{ruta/a/imagen_inamp.png}
+	\caption{Topología del Amplificador de Instrumentación de 3 Op-Amps.}
+	\label{fig:inamp}
+\end{figure}
+
+Esta topología (vista en la Figura \ref{fig:inamp}) desacopla las funciones: la primera etapa (U1, U2) actúa como un búfer de alta impedancia que provee toda la ganancia, mientras que la segunda etapa (U3) es un restador diferencial que rechaza la tensión de modo común.
+
+La principal ventaja de este diseño es que la ganancia diferencial total (\(A_{v_d}\)) se puede configurar de forma precisa y estable mediante una \textbf{única resistencia} de ganancia, \(R_G\). Asumiendo una etapa de resta unitaria (U3), la ganancia total del circuito está dada por:
+
+\begin{equation}
+	A_{v_d} = \frac{V_{o}}{V_S} = \left( 1 + \frac{2R}{R_G} \right)
+	\label{eq:ganancia_inamp}
+\end{equation}
+
+Esta ecuación será la herramienta de diseño fundamental en la sección de "Desarrollo" para calcular los valores de los componentes que nos permitan obtener la ganancia necesaria.
+
+
+\subsection{Digitalización, Procesamiento y Visualización}
+La señal \(V_o\), ahora una \textbf{señal analógica fuerte} (ej. 0-2.44\,V), está lista para ser convertida al dominio digital.
+
+Esta tarea es realizada por el "cerebro" del sistema: un \textbf{Microcontrolador}. Para este proyecto, se opta por utilizar un microcontrolador de la familia \textbf{PIC} de Microchip, los cuales son una elección robusta y común en este tipo de diseños.
+
+El PIC centraliza tres tareas:
+
+\begin{enumerate}
+	\item \textbf{Digitalización:} La ventaja clave de esta familia es que muchos modelos integran un \textbf{Conversor Analógico-Digital (ADC)} de alta precisión en el mismo chip. Este ADC "mide" la señal analógica \(V_o\) y la "cuantifica", asignándole un número entero (discreto). Para cumplir con la especificación de 1 gramo en un rango de 2000 gramos, necesitamos un mínimo de \(log_2(2000) \approx 10.96\) bits. Por lo tanto, se seleccionará un modelo de PIC que posea un ADC integrado de \textbf{12 bits} (que provee \(2^{12} = 4096\) niveles). Si necesitamo diseñar con mayor rango de gramos o mayor precision por kg, seria mejor elegir un modelo de PIC con mayor cantidad de resolucion para hacer el diseño mas robusto, como los correspondientes PIC24 que tienen un ADC de \textbf{16 bits}.
+	
+	\item \textbf{Procesamiento:} Este número digital (ej. un valor entre 0 y 4095) es el que el núcleo del PIC lo procesa,  calculando el peso en gramos, aplicar la función de "Tara" (puesta a cero) y compensar errores.
+	
+	\item \textbf{Visualización:} Finalmente, el PIC debe mostrar el resultado al usuario. Dado que el rango de medición (0-2000\,g) requiere 4 dígitos, se utilizará un \textbf{display de 4 dígitos y 7 segmentos}. El microcontrolador manejará este display eficientemente usando la técnica de \textit{multiplexación} a través de sus pines de E/S (Entrada/Salida).
+\end{enumerate}
+
+En la siguiente sección de \textbf{Desarrollo}, se seleccionarán los modelos comerciales específicos para el PIC, el amplificador operacional y el display que implementarán esta arquitectura.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- SECCIÓN 3: DESARROLLO Y SELECCIÓN DE COMPONENTES ---
+\section{Desarrollo y Selección de Componentes}
+En esta sección se seleccionarán los componentes comerciales para implementar la arquitectura teórica. El criterio de selección es la \textbf{optimización del costo de producción} (Viabilidad Comercial) sin sacrificar la \textbf{precisión} (Diseño Técnico de 1g).
+
+\subsection{Fuente de Alimentación (Redefinición de Arquitectura)}
+Si utilizamos fuentes simétricas (\( \pm 5V\)) con transformadores y reguladores (LM317/LM337) es costoso y complejo.
+
+Para reducir costos, este diseño operará con una \textbf{fuente de alimentación única de +5V}. Esto es posible gracias a la selección de amplificadores operacionales "Rail-to-Rail" (RRIO) modernos, capaces de operar entre 0V y +5V. El circuito completo (Celda, Amplificador y PIC) se alimentará desde esta única fuente (ej. un regulador LM7805 o una entrada USB).
+
+\subsection{Selección del Transductor (Celda de Carga)}
+Se busca una celda económica de 4 hilos (Puente de Wheatstone completo) con rango de 2kg a 5kg. Se asume \(V_{cc} = 5V\).
+
+\subsubsection{Opción 1: Célula de Carga "de Barra" Genérica (5kg)}
+\begin{itemize}
+	\item \textbf{Sensibilidad:} 1.0\,mV/V
+	\item \textbf{Notas:} Es el sensor más barato del mercado (tipo "half-bridge"). Requiere electrónica de soporte para completar el puente.
+	\item \textbf{Costo Aprox:} \$1.50 USD
+	\item \textbf{Señal Máx. (\(V_S\)) a 5V:} \(1.0\,\text{mV/V} \times 5V = \textbf{5.0\,mV}\)
+\end{itemize}
+
+\subsubsection{Opción 2: YZC-1B / YZC-133 (3kg - 5kg)}
+\begin{itemize}
+	\item \textbf{Sensibilidad:} 2.0\,mV/V
+	\item \textbf{Notas:} Muy común, ya es un puente completo (4 hilos). Alta sensibilidad.
+	\item \textbf{Costo Aprox:} \$3.50 USD
+	\item \textbf{Señal Máx. (\(V_S\)) a 5V:} \(2.0\,\text{mV/V} \times 5V = \textbf{10.0\,mV}\)
+\end{itemize}
+
+\subsubsection{Opción 3: TAL220 (3kg)}
+\begin{itemize}
+	\item \textbf{Sensibilidad:} 1.0\,mV/V
+	\item \textbf{Notas:} Muy robusta (usada en TPs).
+	\item \textbf{Costo Aprox:} \$8.50 USD
+	\item \textbf{Señal Máx. (\(V_S\)) a 5V:} \(1.0\,\text{mV/V} \times 5V = \textbf{5.0\,mV}\)
+\end{itemize}
+
+\subsubsection{Justificación de la Selección (Celda de Carga)}
+Se selecciona la \textbf{Opción 2 (YZC-1B)}. Ofrece la mejor relación costo-sensibilidad. Sus 10\,mV de señal de salida (el doble que las otras opciones) nos da una señal de entrada más fuerte, haciendo el trabajo del amplificador más fácil y menos susceptible al ruido.
+
+\subsection{Selección del Amplificador Operacional (para In-Amp Discreto)}
+Este es el componente más crítico. Debe ser de "auto-cero" (Zero-Drift) para eliminar el error de offset (\(V_{os}\)), que es el principal enemigo de la resolución de 1g. Debe ser Rail-to-Rail (RRIO) para operar con +5V.
+
+\subsubsection{Opción 1: LM358 (Uso General)}
+\begin{itemize}
+	\item \textbf{Voltaje de Offset (\(V_{os}\)):} 7,000\,\textmu V (máx)
+	\item \textbf{Notas:} Extremadamente barato, pero su offset es tan alto que es \textbf{imposible} lograr la resolución de 1g.
+	\item \textbf{Costo Aprox:} \$0.10 USD
+\end{itemize}
+
+\subsubsection{Opción 2: MCP6V02 (Auto-Cero, RRIO)}
+\begin{itemize}
+	\item \textbf{Voltaje de Offset (\(V_{os}\)):} 8\,\textmu V (máx)
+	\item \textbf{Notas:} Op-Amp de precisión (Auto-Cero) de Microchip. Ideal para fuente única.
+	\item \textbf{Costo Aprox:} \$1.20 USD (para el dual)
+\end{itemize}
+
+\subsubsection{Opción 3: TLV9002 (Uso General, RRIO)}
+\begin{itemize}
+	\item \textbf{Voltaje de Offset (\(V_{os}\)):} 4,000\,\textmu V (máx)
+	\item \textbf{Notas:} Op-Amp moderno y barato de TI, pero sin auto-cero. El offset sigue siendo muy alto.
+	\item \textbf{Costo Aprox:} \$0.35 USD
+\end{itemize}
+
+\subsubsection{Justificación de la Selección (Amplificador Operacional)}
+La única opción viable es el \textbf{MCP6V02} (se necesitarán dos: uno dual para U1/U2 y uno simple para U3).
+Un amplificador estándar como el LM358 (con 7,000\,\textmu V de offset) introduci-ría un error de salida de \(7,000\textmu V \times \text{Ganancia}\), que es miles de veces más grande que nuestra señal de 1g. El MCP6V02, con 8\,\textmu V de offset, es la única opción de bajo costo que hace que el diseño sea técnicamente posible.
+
+\subsection{Selección del Microcontrolador y Display}
+\subsubsection{Opción 1: PIC16F877A (Gama Clásica)}
+\begin{itemize}
+	\item \textbf{Resolución ADC:} 10 bits (1024 niveles)
+	\item \textbf{Notas:} Obsoleto. Sus 10 bits son \textbf{insuficientes} para los 2000 pasos requeridos.
+	\item \textbf{Costo Aprox:} \$2.50 USD
+\end{itemize}
+
+\subsubsection{Opción 2: PIC16F18345 (Gama Moderna 8-bit)}
+\begin{itemize}
+	\item \textbf{Resolución ADC:} 12 bits (4096 niveles)
+	\item \textbf{Notas:} Moderno, barato, y su ADC de 12 bits (4096 pasos) cumple holgadamente los 2000 pasos.
+	\item \textbf{Costo Aprox:} \$1.50 USD
+\end{itemize}
+
+\subsubsection{Opción 3: STM32G030 (Gama ARM M0+)}
+\begin{itemize}
+	\item \textbf{Resolución ADC:} 12 bits (4096 niveles)
+	\item \textbf{Notas:} Muy potente (32 bits) y de bajo costo.
+	\item \textbf{Costo Aprox:} \$1.80 USD
+\end{itemize}
+
+\subsubsection{Justificación de la Selección (MCU y Display)}
+Se selecciona el \textbf{PIC16F18345}. Cumple con la arquitectura PIC definida y su ADC de 12 bits (4096 niveles) es perfecto para nuestra especificación de 2000 niveles. Es la opción más económica y moderna dentro de la familia PIC que cumple el requisito.
+Para la \textbf{Visualización}, se selecciona un display genérico de \textbf{4 dígitos y 7 segmentos} de cátodo común, que se manejará por multiplexación. (Costo Aprox: \$0.70 USD).
+
+\subsection{Cálculos de Diseño y Componentes Pasivos}
+Con los componentes seleccionados, la arquitectura final es:
+\begin{itemize}
+	\item \textbf{Alimentación:} Fuente única +5V.
+	\item \textbf{Celda (YZC-1B):} \(V_{S,max} = 10.0\,mV\).
+	\item \textbf{PIC (PIC16F18345):} ADC de 12 bits.
+	\item \textbf{Referencia ADC:} Se usará la referencia interna fija (FVR) del PIC de \textbf{4.096\,V}. Esto nos da el rango de salida objetivo.
+	\item \textbf{Referencia In-Amp (\(V_{ref}\)):} Para que la salida del In-Amp (que opera de 0 a 5V) no sature, la centraremos. Se crea una \(V_{ref}\) de \textbf{1.0\,V} con un divisor resistivo simple.
+\end{itemize}
+
+\subsubsection{Cálculo de Ganancia del Amplificador de Instrumentación}
+El diseño debe amplificar la señal de 10mV en un rango de salida que no sature entre 0V y 5V.
+\begin{itemize}
+	\item \textbf{Señal de Entrada Máx. (\(V_{S,max}\)):} 10.0\,mV.
+	\item \textbf{Rango de Salida Objetivo:} Se define un rango de 3.0V (desde 1.0V a 4.0V), centrado en nuestro ADC de 4.096V.
+	\item \textbf{Ganancia Requerida (\(A_{v_d}\)):}
+	\begin{equation}
+		A_{v_d} = \frac{\text{Rango de Salida}}{\text{Rango de Entrada}} = \frac{3.0\,\text{V}}{10.0\,\text{mV}} = 300
+	\end{equation}
+\end{itemize}
+Usando la Ecuación \ref{eq:ganancia_inamp}, fijamos \(R = 10\,k\Omega\) (resistencias de 1\% de tolerancia) y calculamos \(R_G\):
+\begin{equation}
+	R_G = \frac{2R}{A_{v_d} - 1} = \frac{2 \cdot 10,000\,\Omega}{300 - 1} = \frac{20000\,\Omega}{299} \approx 66.88\,\Omega
+\end{equation}
+Se seleccionará un valor estándar E96 (1\%) de \textbf{68.1\,\(\Omega\)} para \(R_G\).
+
+\subsubsection{Diseño de la Fuente de Alimentación}
+Todo el circuito (PIC, Amplificadores MCP6V02 y Celda de Carga) ha sido diseñado para operar con una única fuente de alimentación de \textbf{+5V}. Este riel de +5V debe ser estable. Para generar este voltaje, se plantean dos opciones comerciales que dotan de flexibilidad al producto:
+
+\begin{itemize}
+	\item \textbf{Opción 1: Conexión Externa (Fuente de Pared):}
+	Para uso fijo en mostrador, el método más simple y económico. Se utiliza un conector jack DC estándar que acepta una fuente de alimentación externa (ej. 9V o 12V). Esta tensión de entrada es regulada a +5V estables usando un regulador lineal de bajo costo, como el clásico \textbf{LM7805}.
+	
+	\item \textbf{Opción 2: Alimentación por Batería (Portabilidad):}
+	Para permitir el uso portátil (clave en balanzas comerciales), se puede alimentar el dispositivo con baterías.
+	\begin{itemize}
+		\item \textbf{Batería de 9V:} Se puede usar una batería estándar de 9V (como la 6F22), la cual también se regula a +5V usando el mismo \textbf{LM7805} (actuando como "step-down" o reductor).
+		\item \textbf{Baterías AA/AAA:} Alternativamente, para un costo operativo menor, se podrían usar 2 o 3 baterías AA (3V a 4.5V). En este caso, se requeriría un conversor DC-DC \textbf{step-up} (o "boost") para elevar la tensión de la batería a +5V estables.
+	\end{itemize}
+\end{itemize}
+
+Para un producto competitivo, se diseñara para funcionar con pilas por la portabilidad y evitar el costo de baterias o pilas en el producto. Apuntando a un mercado de portabilidad de balanzas de precision que es un nicho mas exclusivo y con menor barrera de entrada para posicionar mejor la marca.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --- SECCIÓN 4: ANÁLISIS DE ERRORES Y PRECISIÓN ---
+\section{Análisis de Errores y Precisión}
+Una vez seleccionados los componentes, se debe realizar un análisis de errores para verificar si el diseño puede cumplir con la especificación de \textbf{resolución de 1 gramo}.
+
+\subsection{Definición de la Resolución del ADC ($V_{LSB}$)}
+El componente que define nuestra "regla" de medición es el ADC del microcontrolador.
+\begin{itemize}
+	\item \textbf{Microcontrolador (MCU):} PIC16F18345.
+	\item \textbf{Resolución del ADC (\(n\)):} 12 bits (\(2^{12} = 4096\) niveles).
+	\item \textbf{Fondo de Escala (FE):} Se utilizará la Referencia de Voltaje Fija (FVR) interna del PIC, ajustada a \textbf{4.096\,V}.
+\end{itemize}
+La tensión mínima que nuestro sistema puede "ver" (el valor de 1 bit) es:
+\begin{equation}
+	V_{LSB} = \frac{\text{Fondo de Escala}}{2^n} = \frac{4.096\,\text{V}}{4096} = 0.001\,\text{V} = \mathbf{1.0\,\text{mV}}
+\end{equation}
+Cualquier error analógico total que sea significativamente menor que 1.0\,mV será "invisible" para el ADC y no afectará la medición.
+
+\subsection{Análisis de Errores Estáticos (DC)}
+Este es el error de offset de nuestro Amplificador de Instrumentación (In-Amp) en condiciones ideales (25\(^{\circ}\)C). La fuente de error dominante es el Voltaje de Offset de Entrada (\(V_{os}\)) de los Op-Amps, ya que este error se multiplica por la ganancia total (\(A_{v_d} = 300\)).
+
+\begin{itemize}
+	\item \textbf{Amplificador (U1, U2, U3):} MCP6V02 (Zero-Drift).
+	\item \textbf{Voltaje de Offset (\(V_{os,max}\)):} 8\,\(\mu\text{V}\).
+	\item \textbf{Ganancia (\(A_{v_d}\)):} 300.
+\end{itemize}
+La fórmula estándar para el error de offset total referido a la salida (\((\Delta V_o)_{T}\)) en un In-Amp de 3 Op-Amps es:
+\begin{equation}
+	(\Delta V_o)_{T} = A_{v_d} \times (V_{os,U1} - V_{os,U2}) + V_{os,U3}
+\end{equation}
+En el peor caso posible, los offsets de U1 y U2 se restan (ej. +8\(\mu\text{V}\) y -8\(\mu\text{V}\)):
+\begin{itemize}
+	\item \textbf{Error de Entrada (Mismatch):} \(8\,\mu\text{V} - (-8\,\mu\text{V}) = 16\,\mu\text{V}\)
+	\item \textbf{Error Etapa Salida:} \(V_{os,U3} = 8\,\mu\text{V}\)
+\end{itemize}
+Calculando el error total de salida en DC:
+\begin{equation}
+	(\Delta V_o)_{DC} = (300 \times 16\,\mu\text{V}) + 8\,\mu\text{V} = 4800\,\mu\text{V} + 8\,\mu\text{V} = \mathbf{4.808\,\text{mV}}
+\end{equation}
+Este error de DC (4.808\,mV) es \textbf{grande} (casi 5 veces nuestro \(V_{LSB}\)). Sin embargo, es un error \textit{estático}, lo que significa que \textbf{será completamente eliminado por la función "Tara"} (puesta a cero) del software del PIC. El software medirá este offset al inicio y lo restará de todas las mediciones futuras.
+
+\subsection{Análisis de Deriva Térmica (Error No Compensable)}
+El error crítico que \textit{no} puede ser eliminado por la función "Tara" es la \textbf{deriva térmica}: cuánto cambia el offset a medida que la temperatura varía entre 0\(^{\circ}\)C y 40\(^{\circ}\)C.
+
+\begin{itemize}
+	\item \textbf{Deriva Térmica del MCP6V02:} 0.05\,\(\mu\text{V}/^{\circ}\text{C}\) (máx).
+	\item \textbf{Rango de \(\Delta T\):} Asumiendo 25\(^{\circ}\)C como referencia, el peor caso es \(\Delta T = 25\,^{\circ}\text{C}\) (de 25\(^{\circ}\)C a 0\(^{\circ}\)C).
+\end{itemize}
+Usamos la misma fórmula de error, pero con los valores de deriva. Peor caso de mismatch en la deriva:
+\begin{itemize}
+	\item \textbf{Drift de Entrada (Mismatch):} \(0.05\,\mu\text{V}/^{\circ}\text{C} - (-0.05\,\mu\text{V}/^{\circ}\text{C}) = 0.1\,\mu\text{V}/^{\circ}\text{C}\)
+	\item \textbf{Drift Etapa Salida:} \(0.05\,\mu\text{V}/^{\circ}\text{C}\)
+\end{itemize}
+Calculando la deriva total de salida:
+\begin{equation}
+	(\Delta V_o)_{Drift} = (300 \times 0.1\,\mu\text{V}/^{\circ}\text{C}) + 0.05\,\mu\text{V}/^{\circ}\text{C} = \mathbf{30.05\,\mu\text{V}/^{\circ}\text{C}}
+\end{equation}
+Ahora, calculamos el error total por la variación de temperatura (\(\Delta T = 25\,^{\circ}\text{C}\)):
+\begin{equation}
+	(\Delta V_o)_{Temp} = 30.05\,\mu\text{V}/^{\circ}\text{C} \times 25\,^{\circ}\text{C} = 751.25\,\mu\text{V} \approx \mathbf{0.75\,\text{mV}}
+\end{equation}
+
+\subsection{Verificación de Resolución Final}
+Este error térmico de \textbf{0.75\,mV} es el \textbf{error real e ineludible} de nuestro sistema analógico después de aplicar la "Tara". Ahora comparamos este error contra la resolución del ADC:
+
+\[ (\Delta V_o)_{Temp} = \mathbf{0.75\,\text{mV}} \quad < \quad V_{LSB} = \mathbf{1.0\,\text{mV}} \]
+
+\textbf{Conclusión del Análisis:} El diseño \textbf{cumple} con la especificación. El error analógico total por temperatura (0.75\,mV) es menor que la resolución de nuestro ADC (1.0\,mV).
+
+Esto significa que, aunque la temperatura fluctúe, el error de deriva nunca será lo suficientemente grande como para causar un salto de 1 bit en el ADC, garantizando una medición estable y precisa.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	
+	% --- SECCIÓN 5: SIMULACIONES ---
+	\section{Simulaciones}
+	Para validar los cálculos teóricos, se realizaron simulaciones 
+	
+	\begin{figure}[H]
+		\centering
+		% \includegraphics[width=0.9\linewidth]{ruta/a/simulacion_transitoria.png}
+		\caption{Resultado de la simulación.}
+		\label{fig:simulacion}
+	\end{figure}
+	
+	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --- SECCIÓN 6: ANÁLISIS DE MERCADO Y COSTOS ---
+\section{Análisis de Mercado y Costos}
+Con el diseño técnico y el análisis de errores completados, el último paso es verificar la \textbf{viabilidad comercial} del producto, un objetivo clave de este proyecto.
+
+\subsection{Análisis de Mercado (Competencia)}
+Se realizó un relevamiento de precios de balanzas comerciales con especificaciones similares (2kg a 5kg, 1g de resolución) de las marcas mencionadas en la introducción (Systel, Kretz, Toledo, etc).
+
+A la fecha de este informe (finales de 2024 / principios de 2025), los precios de venta al público (PVP) de estas unidades en Argentina, una vez dolarizados, oscilan entre los \textbf{\$100 y \$150 USD} para los modelos de mostrador más económicos.
+
+Se realizó un relevamiento de balanzas con especificaciones similares (rango 2kg-5kg, resolución 1g). El mercado está claramente segmentado en dos categorías:
+
+\begin{enumerate}
+	\item \textbf{Uso Comercial Homologado (Profesional):}
+	Equipos robustos, con batería interna, plato de acero inoxidable y certificación oficial del INTI (Instituto Nacional de Tecnología Industrial) para poder ser usados en transacciones comerciales. Marcas como Systel, Kretz y Toledo dominan este segmento.
+	\begin{itemize}
+		\item \textbf{Competidor 1: Systel Clipse 5kg.}
+		\begin{itemize}
+			\item \textbf{Especificaciones:} 5kg/1g, Batería 90hs, Plato Acero Inox., Homologada.
+			\item \textbf{Precio Aprox. (2024):} \$140.00 USD.
+		\end{itemize}
+		\item \textbf{Competidor 2: Kretz Novel Eco 2 5kg.}
+		\begin{itemize}
+			\item \textbf{Especificaciones:} 5kg/1g, Batería, Plato Acero Inox., Homologada.
+			\item \textbf{Precio Aprox. (2024):} \$120.00 USD.
+		\end{itemize}
+	\end{itemize}
+	
+	\item \textbf{Uso Doméstico / Cocina (No Homologado):}
+	Equipos más livianos, de plástico, alimentados por baterías AA/AAA y sin certificación. Son de bajo costo y usados en el hogar o en aplicaciones de cocina no comerciales \cite{Balanza_Alaniz}.
+	\begin{itemize}
+		\item \textbf{Competidor 3: Yelmo BL-7001.}
+		\begin{itemize}
+			\item \textbf{Especificaciones:} 3kg/1g, Plato de vidrio, Batería AA.
+			\item \textbf{Precio Aprox.):} \$11.00 USD.
+		\end{itemize}
+		\item \textbf{Competidor 4: Ozeri / Etekcity (Genérica).}
+		\begin{itemize}
+			\item \textbf{Especificaciones:} 5kg/1g, Plato Acero Inox., Batería AAA.
+			\item \textbf{Precio Aprox.:} \$9.00 USD.
+		\end{itemize}
+	\end{itemize}
+\end{enumerate}
+
+Este PVP de \$100 USD se convierte en nuestro "Precio Objetivo" a vencer. Para que el producto sea viable, nuestro costo de fabricación, debe ser significativamente menor.
+
+Dado los costos, apuntamos aun mercado de balanzas premium de precision, porque con los costos de uso domestico - cocina no llegamos a competir con la tecnologia aplicada y los materiales de calidad a utilizar.
+
+\subsection{Lista de Compra del Prototipo}
+A continuación, se presenta la " Lista de Materiales " con los costos estimados (en USD, por volumen) de los componentes electrónicos clave seleccionados en la Sección 3.
+
+\begin{table}[H]
+	\centering
+	\caption{Lista de Materiales (BOM) - Costos de Componentes Electrónicos.}
+	\label{tab:costos}
+	\begin{tabular}{l l r}
+		\hline
+		\textbf{Componente} & \textbf{Modelo/Valor Seleccionado} & \textbf{Costo Est. [USD]} \\
+		\hline
+		Celda de Carga      & YZC-1B (5kg, 2mV/V)       & 3.50 \\
+		Amplificador Op. 1  & MCP6V02 (Dual, Zero-Drift)    & 1.20 \\
+		Amplificador Op. 2  & MCP6V01 (Single, Zero-Drift)  & 0.90 \\
+		Microcontrolador    & PIC16F18345 (8-bit, 12b-ADC)  & 1.50 \\
+		Display             & 4-Dígitos, 7-Segmentos (C.C.)   & 0.70 \\
+		Regulador Tensión   & LM7805 (+5V)                  & 0.25 \\
+		Resistencias 1\%    & 10k\(\Omega\), 68.1\(\Omega\), etc. & 0.25 \\
+		PCB y Pasivos Varios & (Jacks, Caps, Conectores)      & 1.70 \\
+		\hline
+		\textbf{Costo Total (BOM Electrónico)} &       & \textbf{\$10.00 USD} \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\subsection{Análisis de Viabilidad Económica}
+El análisis de costos arroja un \textbf{costo de materiales de \$10.00 USD} por unidad, pudiendo disminuir mas el precio aumentando la produccion a por ejemplo 1000 unidades, ya comprando a precios mayoristas, disminuyendo nuestos costo fijos del producto. 
+
+Este costo es extremadamente competitivo. lo cual demuestra la ventaja de nuestro diseño de fuente única y selección de componentes modernos de bajo costo.
+
+Un MVP de \$10.00 USD deja un margen de ganancia Incluso sumando otros costos de producción:
+\begin{itemize}
+	\item Ensamblaje y Mano de Obra.
+	\item Calibración individual.
+	\item Inyección de la carcasa plástica, plato de acero inoxidable y packaging.
+\end{itemize}
+
+Asumiendo que estos costos adicionales dupliquen el costo de producción (llevándolo a \$20 o \$25 USD), el producto sigue siendo altamente rentable para competir en un mercado donde el precio de venta al público es de \$100 USD. Por lo tanto, \textbf{el diseño se considera económicamente viable}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --- SECCIÓN 7: CONCLUSIÓN ---
+\section{Conclusión}
+Se ha completado el diseño de la etapa analógica para una balanza comercial, logrando satisfacer el \textbf{doble objetivo} planteado en la introducción: precisión técnica y viabilidad comercial.
+
+Desde el \textbf{punto de vista técnico}, se ha cumplido satisfactoriamente con la especificación de resolución de 1 gramo. El análisis de errores (Sección 4) fue la clave del diseño. Se demostró que el error estático de DC (4.808\,mV), aunque grande, es irrelevante ya que se elimina por software mediante la función "Tara".
+
+El factor crítico, la \textbf{deriva térmica} (error no compensable), se calculó en \textbf{0.75\,mV} en el peor de los casos (de 0\(^{\circ}\)C a 40\(^{\circ}\)C). Este error es \textbf{inferior} al paso de cuantificación de nuestro ADC de 12 bits (\(V_{LSB} = 1.0\,mV\)). Esto garantiza que el diseño es estable y que la fluctuación de la temperatura no causará un salto en el dígito menos significativo, validando así la resolución de 1 gramo. Esta precisión fue lograda gracias a la selección de un amplificador operacional "Zero-Drift" (MCP6V02).
+
+Desde el \textbf{punto de vista comercial}, el diseño es altamente competitivo. La decisión de arquitectura de utilizar una \textbf{fuente de alimentación única de +5V} y componentes eliminó la necesidad de una fuente simétrica costosa (LM317/LM337 y transformador). Esto, combinado con una selección optimizada de componentes (PIC16F18345), resultó en un costo electrónico de aproximadamente \textbf{\$10.00 USD}.
+
+Este costo de producción es significativamente inferior a opciones del mercado, donde permite un precio de venta al público (PVP) muy agresivo, capaz de competir exitosamente en el segmento "Pro-Doméstico" (\$35-\$40 USD).
+
+En resumen, se ha diseñado un producto que no solo funciona en la teoría y cumple las especificaciones, sino que también está optimizado para su producción y comercialización.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	% --- SECCIÓN 8: ANEXO ---
+	\newpage
+	\section{Anexo: Esquemático Completo}
+	La Figura \ref{fig:esquematico} muestra el diagrama esquemático completo del circuito, incluyendo la celda de carga, la etapa de acondicionamiento y la fuente de alimentación simétrica, tal como fue diseñado en OrCAD.
+	
+	\begin{figure}[H]
+		\centering
+		% \includegraphics[width=1.0\linewidth]{ruta/a/esquematico_completo.png}
+		\caption{Esquemático completo del diseño de la balanza.}
+		\label{fig:esquematico}
+	\end{figure}
+
+
+	
+\end{document}
+% --- Fin del Documento ---
