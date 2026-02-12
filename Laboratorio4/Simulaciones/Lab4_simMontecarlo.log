@@ -1,0 +1,158 @@
+LTspice 24.1.10 for Windows
+Circuit: C:\Users\luchi\Desktop\LTspice sims\Sintesis de redes\Lab4_simMontecarlo.net
+Start Time: Thu Feb 12 18:39:52 2026
+solver = Normal
+Maximum thread count: 8
+tnom = 27
+temp = 27
+method = trap
+Early termination of direct N-R iteration.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+vernier = 0.5
+Gmin = 1.67772
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+Gmin = 1.53118
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195312
+Gmin = 1.5134
+vernier = 0.00260417
+Gmin = 1.5048
+vernier = 0.00130208
+vernier = 0.000651042
+vernier = 0.000868055
+Gmin = 1.50358
+vernier = 0.00115741
+vernier = 0.000578703
+vernier = 0.000434027
+Gmin = 1.5014
+vernier = 0.000578703
+vernier = 0.000771604
+Gmin = 1.49932
+vernier = 0.000578703
+vernier = 0.000434027
+vernier = 0.000578703
+Gmin = 1.49815
+vernier = 0.000434027
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+Source Step = 33.3333%
+Source Step = 63.6364%
+Source Step = 93.9394%
+Source stepping succeeded in finding the operating point.
+
+.step run=1
+.step run=2
+.step run=3
+.step run=4
+.step run=5
+.step run=6
+.step run=7
+.step run=8
+.step run=9
+.step run=10
+.step run=11
+.step run=12
+.step run=13
+.step run=14
+.step run=15
+.step run=16
+.step run=17
+.step run=18
+.step run=19
+.step run=20
+.step run=21
+.step run=22
+.step run=23
+.step run=24
+.step run=25
+.step run=26
+.step run=27
+.step run=28
+.step run=29
+.step run=30
+.step run=31
+.step run=32
+.step run=33
+.step run=34
+.step run=35
+.step run=36
+.step run=37
+.step run=38
+.step run=39
+.step run=40
+.step run=41
+.step run=42
+.step run=43
+.step run=44
+.step run=45
+.step run=46
+.step run=47
+.step run=48
+.step run=49
+.step run=50
+.step run=51
+.step run=52
+.step run=53
+.step run=54
+.step run=55
+.step run=56
+.step run=57
+.step run=58
+.step run=59
+.step run=60
+.step run=61
+.step run=62
+.step run=63
+.step run=64
+.step run=65
+.step run=66
+.step run=67
+.step run=68
+.step run=69
+.step run=70
+.step run=71
+.step run=72
+.step run=73
+.step run=74
+.step run=75
+.step run=76
+.step run=77
+.step run=78
+.step run=79
+.step run=80
+.step run=81
+.step run=82
+.step run=83
+.step run=84
+.step run=85
+.step run=86
+.step run=87
+.step run=88
+.step run=89
+.step run=90
+.step run=91
+.step run=92
+.step run=93
+.step run=94
+.step run=95
+.step run=96
+.step run=97
+.step run=98
+.step run=99
+.step run=100
+Total elapsed time: 101.292 seconds.
+
+Files loaded:
+C:\Users\luchi\Desktop\LTspice sims\Sintesis de redes\Lab4_simMontecarlo.net
+C:\Users\luchi\Desktop\LTspice sims\Sintesis de redes\LM324.lib
+
