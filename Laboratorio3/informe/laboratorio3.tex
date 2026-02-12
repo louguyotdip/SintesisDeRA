@@ -1,0 +1,65 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+%\usepackage[spanish,es-tabla]{babel}
+
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+%\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{etoolbox}
+
+\usepackage{subcaption}
+\usepackage{amssymb}
+
+%\usepackage[table,xcdraw]{xcolor}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\usepackage{float}
+\usepackage[%
+a4paper,       % Tamaño de papel
+left=2.5cm,    % Margen izquierdo
+right=2.5cm,   % Margen derecho
+top=3cm,       % Margen superior
+bottom=3cm,    % Margen inferior
+footskip=1.5cm % Espacio para el pie de página
+]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead[\leftmark]{Síntesis de Redes Activas - Laboratorio 3}
+\rfoot[]{\thepage}
+%\addbibresource{bibliografia.bib}
+
+
+\begin{document}
+	
+	% agregamos la caratula
+	\input{caratulaLab3}
+	\newpage
+	
+	% agregamos el indice
+	\tableofcontents
+	\newpage	
+	
+	
+	%Analisis1
+	\input{VFA-VFA}
+	\newpage
+	
+	%Analisis2
+	\input{VFA-CFA}
+	\newpage
+	
+	%Analisis3
+	\input{VFA-CFA2}
+	\newpage
+	
+	
+		%Analisis3
+%	\input{VFA-CFA2}
+	\newpage
+	
+\end{document}

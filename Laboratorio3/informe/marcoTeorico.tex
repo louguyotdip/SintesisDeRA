@@ -1,0 +1,156 @@
+
+%\begin{document}
+	\section{Introducción teórica}
+	
+	\vspace{1em}
+	
+	En aplicaciones de alta velocidad y banda ancha, el sistema se 	ve forzado a trabajar en sus límites de capacidad y por lo tanto es necesario analizar
+	cuidadosamente las especificaciones requeridas a fin de mantener la estabilidad del
+	sistema y así ofrecer el mejor funcionamiento y velocidad de respuesta del circuito.
+	Entre las especificaciones dinámicas más utilizadas se encuentran las siguientes:
+	\begin{itemize}
+		\item Minimización de la distorsión de frecuencia en la banda de
+	transmisión. Condición de máxima planicidad de módulo.
+		\item Minimización de la distorsión de fase. Condición de máxima planicidad de
+	retardo.
+		\item Maximización del producto ganancia-ancho de banda del amplificador.	
+	\end{itemize}
+	
+	\vspace{1em}
+	
+	Sea un sistema realimentado con una función de transferencia:
+	
+	\[A_{vf}= \frac{A_v(s)}{1- T(s)}\]
+	
+	Si existe una frecuencia $\omega_g$ tal que se cumpla:
+	
+	\[1 - T(j \omega_g) = 0  \]
+	
+	El denominador de la función de transferencia se anula y la ganancia tenderá al
+	infinito. En ese momento se considera que el sistema se ha vuelto inestable. Esta
+	ecuación se satisface con la siguiente relación, en módulo y fase:
+	 \[ T(j \omega_g ) = 1 \quad \Rightarrow |T(j\omega_g)|= 1 \quad y \quad \angle T(j\omega_g) = 20\pi n \quad con \quad n = 0, 1, 2... \]
+	  Un sistema se considera estable, cuando se encuentra alejado de estas condiciones
+	 de inestabilidad. Existen diversos criterios para considerar un sistema estable, entre ellos tenemos:
+	 
+	 \vspace{1em}
+	 
+	 \textbf{Margen de fase:} indica qué an alejado se encuentra la fase de T de ser $360° (2\pi)$, a la frecuencia en la que se cumple la condición de inestabilidad del módulo.
+	 
+	 \vspace{1em}
+	 
+	 \textbf{Margen de módulo:} Indica qué tan alejado se encuentra el módulo de T de ser 1, a la frecuencia en la que se cumple la condición de inestabilidad de fase.
+	 
+	 \vspace{1em}
+	 
+	 De estos 2 criterios, solo se utiliza el Margen de Fase, ya que la condición de
+	 inestabilidad de módulo se cumple a una frecuencia mucho menor que la condición
+	 de fase.
+	 
+	 \vspace{1em}
+	 
+	 Entonces, para encontrar el margen de fase, es necesario encontrar la diferencia
+	 que existe entre la fase de $T(j\omega_g)$ y los -360º a los cuales el sistema se vuelve inestable. Sabiendo que:
+	 
+	 \[T(s) = -kA_v(s) \quad y \quad M\phi = \angle T(j\omega_g) - (-360°) \]
+	 
+	 entonces:
+	 \[M\phi = 180° + \angle A_v(j\omega_g) \]
+	 
+	 Para considerarse estable, el margen de fase debe ser superior a los 45º. Si fuese
+	 menor, la respuesta al escalón unitario sería oscilante tendiendo al infinito. Si es igual a 45º la respuesta oscila entre dos puntos sin tender a infinito pero sin llegar al estado estable. Y si el margen de fase supera los 45º la respuesta se estabiliza al cabo de un cierto tiempo.
+	 
+	 El margen de fase de un circuito dependerá de los componentes presentes en el y
+	 se deberá realizar un circuito de compensación de ser necesario. Según la
+	 aplicación que se esté realizando y dependiendo de las especificaciones que se
+	 requieran, se necesitará obtener un determinado margen de fase utilizando el
+	 compensador. Por ejemplo, para obtener la máxima planicidad de módulo es
+	 necesario un margen de fase de 65º, mientras que para el retardo máximamente
+	 plano se requiere un margen de fase de 72º.
+	 
+	 Para conocer el Margen de Fase que posee un circuito y el ancho de banda $\omega_g$, para el cual el sistema pierde su estabilidad, se suele realizar una aproximación gráfica, ya que el cálculo es complicado y se obtienen resultados lo suficientemente precisos utilizando este método.
+	 Partiendo de la condición de inestabilidad de módulo, sabemos que:
+	 
+	 \[|T(j\omega)|=|-kA_d(j\omega)| = 1 \quad \Rightarrow \quad |A_d(j\omega)| = |1/k| \]
+	 
+	 El ancho de banda potencial será:
+	 
+	 \[\omega_g = 10^{(A_{do} - 1/k)/20}\omega_1 \]
+	 
+	 Sabiendo este valor, y si la función de transferencia del sistema posee dos polos
+	 $\omega_1 \quad y \quad \omega_2$ , se puede obtener el margen de fase utilizando la siguiente ecuación:
+	  
+	 \begin{equation}
+	 	M \varphi = 180^o - arctg (\frac{\omega_g}{\omega_1}) - arctg( \frac{\omega_g}{\omega_2})
+	 \end{equation}
+	Es posible demostrar, que si $\omega_g = \omega_2$ el margen de fase será de 45º, con lo cuál, si la ganancia ideal no inversora, intersecta a la función de transferencia luego de haber superado la frecuencia del segundo polo del sistema, el mismo será siempre menor	a los 45º y por lo tanto será inestable.
+	
+	\vspace{1em}
+	
+	\large\textbf{{Amplificadores compuestos}}
+	
+	\vspace{1em}
+	
+	Se entiende por configuraciones compuestas, a aquellas que poseen dos o más
+	amplificadores dentro del lazo de realimentación. Esta disposición del circuito tiene
+	como fin aprovechar las características positivas de ambos amplificadores, ya sean
+	dinámicas y estáticas. Por esta razón, por lo general estas configuraciones se
+	utilizan con amplificadores de diferentes tipo.
+	Existen diversas formas de organizar estos circuitos pero en este caso solo se
+	analizarán dos amplificadores en cascada, y se considerará que tienen exactamente las mismas características. 
+	
+	\vspace{1em}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.4\linewidth]{cto1lab3.png}
+		\caption{Circuito compuesto}
+		\label{fig:enter-label}
+	\end{figure}
+	
+	\vspace{1em}
+	
+	Una de las principales ventajas que se obtienen en esta configuración, tiene que ver con el gran aumento de ganancia a lazo abierto, que es el resultado de colocar dos amplificadores en cascada. Además se puede ver un notable aumento en el ancho de banda potencial ($\omega_g$) del sistema.
+	Por otro lado, en el análisis de la respuesta en frecuencia de este circuito se puede notar que estas ventajas se ven perjudicadas desde el punto de vista de la estabilidad.
+	
+	\vspace{1em}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.5\linewidth]{respFrecAC.png}
+		\caption{Diagrama de Bode del amplificador compuesto}
+		\label{fig:enter-label}
+	\end{figure}
+	
+	\vspace{1em}
+	
+	Si cada amplificador tiene la misma función de transferencia con un solo polo (ubicado en la misma posición), se puede notar que a pesar del aumento en la	ganancia de lazo ($T_0$) y la ganancia a lazo abierto (2 Ad0), al tener dos polos en la misma frecuencia ($\omega_1$), la ganancia cae con una pendiente de -40 db/dec, lo que	provoca que el sistema se vuelva inestable, con un margen de fase menor a los 45º.
+	Debido a todo esto, es necesario compensar el circuito para obtener el margen de fase deseado.
+	
+	\vspace{1em}
+	
+	Es posible deducir que la inestabilidad del sistema se produce principalmente por la
+	presencia de un polo doble, con lo cuál, una forma sencilla de estabilizar este
+	circuito es la Compensación por separación de polos. Esta consiste en incrementar el ancho de banda del segundo amplificador, para que su polo se desplace de la posición en la que ya se encuentra la frecuencia de corte del primer amplificador. Esto se logra agregando un lazo de realimentación negativo en el segundo amplificador.
+	
+	Para que el sistema quede compensado, la ganancia del mismo, debe ser tal que
+	intercepte a la recta 1/k antes del segundo polo (el que fue desplazado).
+	De esta forma, conociendo el $\omega_T $ y la ganancia a lazo abierto del primer
+	amplificador, se puede calcular el ancho de banda potencial necesario para obtener
+	el margen de fase deseado y a partir de esto conseguir la ubicación del segundo
+	polo. Con este dato, se puede calcular el lazo de realimentación necesario para el
+	circuito.
+	
+	De todo este análisis, se desprende que las ventajas obtenidas por los
+	amplificadores VFA son notorias para una señal pequeña. Es posible mejorar
+	también la respuesta del sistema para gran señal si se utiliza un CFA en cascada
+	con un VFA.
+	
+	Si se coloca primero un amplificador de precisión, a la entrada se tendrán todas las
+	características de precisión del mismo, combinadas con la elevación de la ganancia
+	de lazo y del slew rate, correspondientes al uso de un amplificador realimentado por
+	corriente a la salida. De esta forma se aprovechan las ventajas de cada uno y se
+	mejora la respuesta del sistema tanto para señal débil como para señal fuerte.
+	
+	
+%\end{document}
