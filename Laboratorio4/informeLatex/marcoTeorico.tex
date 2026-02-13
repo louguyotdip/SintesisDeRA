@@ -1,0 +1,51 @@
+
+%\begin{document}
+ \section{Introducción teórica}
+  \vspace{1em}
+  
+   Un filtro activo es un filtro analógico distinguido por el uso de uno o más componentes 
+  activos diferenciándose de los filtros pasivos los cuales solamente usan componentes 
+  pasivos. Típicamente, este elemento activo puede ser un transistor o un amplificador 
+  operacional. 
+  
+  Un filtro activo puede presentar ganancia en toda o parte de la señal de salida respecto 
+  a la señal de entrada. En su implementación se combinan elementos activos y pasivos, 
+  siendo frecuente el uso de amplificadores operacionales, que permite obtener resonancia 
+  y un elevado factor Q sin el empleo de bobinas. 
+  Los filtros activos se realizan en base a una planilla de requerimientos solicitados, que 
+  nos proporcionan las características que tendrá el mismo. Para hallar la función de 
+  transferencia apropiada para estos requisitos, se aplica la teoría de la Aproximación, que 
+  entre ellas podemos encontrar: 
+  \begin{itemize}
+  	\item Butterworth
+  	\item Chebyschev
+  	\item Cahuer
+  	\item etc.		
+  \end{itemize}
+ 
+   Mediante estas aproximaciones se obtiene entonces la función de transferencia de 
+  adecuada. Esta función final se la puede expresar como una productoria de 
+  bicuadráticas, lo que se muestra en la siguiente ecuación: 
+  \vspace{1em}
+  
+  \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=0.6\linewidth]{ecuacionFiltros.png}
+  	\label{fig:enter-label}
+  \end{figure}
+  
+   Con el motivo de modelar individualmente distintas etapas con diversas topologías 
+  obteniendo así los componentes físicos que corresponden a cada una de estas. Luego 
+  mediante una conexión en cascada se obtiene el filtro esperado. 
+  En lo que respecta a las topologías aplicadas para la síntesis de las funciones, podemos 
+  destacar tres de ellas:
+  \begin{itemize}
+  	\item Topología de Realimentación positiva
+  	\item Topología de Realimentación negativa
+  	\item Topología de 4 operacionales	
+  \end{itemize}
+   Utilizando algunas de ellas se llevará a cabo el presente trabajo con el fin de modelar un 
+  filtro pasabanda. 
+  
+
+%\end{document}

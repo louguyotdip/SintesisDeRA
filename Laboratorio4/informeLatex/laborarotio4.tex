@@ -1,0 +1,476 @@
+%\documentclass{article}
+%\usepackage[spanish]{babel}
+%\usepackage{amssymb, amsmath} %Paquetes matemáticos de la American Mathematical Society
+%\usepackage{graphicx}
+%\usepackage[%
+%a4paper,      
+%left=2.5cm,    
+%right=2.5cm,  
+%top=3cm,      
+%bottom=3cm,   
+%footskip=1.5cm 
+%]{geometry}
+
+%\begin{document}
+ \section{Objetivo}
+  En base a la planilla de requerimientos suministrada, sintetizar un circuito basado en amplificadores operacionales que satisfaga esos requisitos.
+  
+  \vspace{1em}
+  
+  \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=1\linewidth]{requerimientos.png}
+  	\caption{Plantilla de requerimientos del filtro}
+  	\label{fig:esquematicoA}
+  \end{figure}
+  
+  \vspace{1em}
+  
+  \section{Desarrollo}
+  \subsection{Aproximación de la función de atenuación}
+    Se pide aproximar la función de atenuación mediante polinomios de Chebyshev, utilizando MatLab o algún software similar. Con los datos especificados en el diagrama y utilizando Python, se encontrará una función de transferencia que se ajuste a los requerimientos mediante dos funciones: cheby1 y cheb1ord.
+    Estas funciones permiten obtener los coeficientes de la función de transferencia.
+    Las especificaciones son las siguientes:
+    \begin{itemize}
+     	\item $f_p = 800 a 1250 Hz$ (Banda de paso)
+     	\item $fa = 0 a 200 Hz y desde 5000 Hz$ (Banda de atenuación)
+     	\item $A_p = 0.25 dB$ (atenuación máxima en banda de paso)
+     	\item $A_a = 30 dB$ (atenuación mínima en banda de rechazo)
+    \end{itemize}   
+    El orden de la aproximación de Chebyshev de tipo 1 obtenido es $n=2$.
+    
+   La frecuencia de corte es $\omega_p = [2\pi 800, 2\pi 1250]$.
+   
+   La función de transferencia obtenida por software resulta:
+   
+   \begin{equation}
+   	H(s)=\frac{1.642 \cdot 10^7s^2}{s^4 + 5080s^3+9.586\cdot 10^7s^2+2.006\cdot10^{11}s+1.559\cdot10^{15}}
+   \end{equation}
+   
+   \vspace{1em}
+   El diagrama de Bode obtenido para esta función de transferencia es:
+   \begin{figure}[h!]
+   	\centering
+   	\includegraphics[width=0.8\linewidth]{bodeFdT.png}
+   	\caption{Diagrama de Bode del filtro}
+   	\label{fig:esquematicoA}
+   \end{figure}
+   
+  
+  \vspace{1em}
+  \subsection{Síntesis con topología bicuadráticas}
+   Con la función de transferencia obtenida se puede deducir que se trata de un filtro pasa banda
+   de orden 4. Por lo tanto se utilizarán las dos funciones bicuadráticas siguientes para sintetizar el circuito:
+   
+   \begin{equation}
+   	H_{PA}(s)=\frac{3.284 \cdot 10^7}{s^2+3184s+6.632 \cdot10^7}
+   \end{equation}
+   
+   \begin{equation}
+   	H_{PB}(s)=\frac{0.5s^2}{s^2+ 1896s + 2.35 \cdot10^7}
+   \end{equation}
+   
+   Graficando ambos filtros pasa alto y pasa bajo superpuestos junto al filtro pasa banda resulta:
+   
+   \begin{figure}[h!]
+   	\centering
+   	\includegraphics[width=0.8\linewidth]{bode3filtros.png}
+   	\caption{Diagrama de Bode de bicuadráticas superpuestas}
+   	\label{fig:esquematicoB}
+   \end{figure}
+   
+   \vspace{1em}
+   \subsubsection{Filtro Pasa Bajo}
+    El circuito para implementar esta clase de filtros pasabandas utilizando topología de realimentación positiva, según Salley-Key es: 
+    
+    \begin{figure}[h!]
+   	  \centering
+   	  \includegraphics[width=0.5\linewidth]{esquemaFPBajo.png}
+      \caption{Esquema Salley-Key pasa bajo}
+   	  \label{fig:esquematicoB}
+    \end{figure}
+    
+    \vspace{1em}
+    Analizando la malla de entrada  del terminal positivo, se aplica el método de las corrientes en los nudos, y se obtiene la siguiente matriz de ecuaciones:
+    \[
+    \begin{bmatrix}
+    	\frac{1}{R_2} + SC_1 & \frac{-1}{R_2} \\
+   	 \frac{-1}{R_2} & {R_1 + R_2 + SC_2} 
+    \end{bmatrix} \cdot 
+    \begin{bmatrix}
+   	 v^+ \\ v_x
+    \end{bmatrix} =
+    \begin{bmatrix}
+    	0 \\ SC_2V_0 + \frac{1}{R_1}V_{in}
+    \end{bmatrix}
+    \]
+    
+    Tomando R1=R2=R y C1=C2=C se obtiene la siguiente función de transferencia de lazo cerrado:
+    
+    \begin{equation}
+    	A_{FB}=\frac{v^+}{v_{in}} = \frac{\frac{s}{RC}}{\frac{1}{(RC)^2}+ \frac{3s}{RC} + s^2}
+    \end{equation}
+    
+    La función de lazo abierto tiene la forma:
+    
+    \begin{equation}
+    	A_{FF}=\frac{v^+}{v_{o}} = \frac{\frac{1}{(RC)^2}}{\frac{1}{(RC)^2}+ \frac{3s}{RC} + s^2}
+    \end{equation}
+    
+    Con estas dos funciones de transferencia se puede obtener la función de transferencia
+   final del circuito. El denominador característico del circuito es el siguiente:
+    \[D = (\frac{1}{RC})^2 + \frac{3s}{RC} + s^2\]   
+    El numerador de la función de transferencia de lazo cerrado es:
+    \[N_{FB} = \frac{s}{RC}\]
+    Mientras que la de lazo abierto es:
+    \[N_{FF} = \frac{1}{(RC)^2}\]
+    La función de transferencia final tiene la forma:
+    
+    \begin{equation}
+    	A(s)= \frac{k \cdot N_{FF}}{D- k\cdot N_{FB}} = \frac{(\frac{k}{RC})^2}{\frac{1}{(RC)^2}+ \frac{(3-k)s}{RC} + s^2}
+    \end{equation}
+    
+    \begin{equation}
+    	A(s)=\frac{k \cdot \omega_p^2}{s^2 + (3-k) \cdot \omega_p s + \omega_p^2}
+    \end{equation}
+    
+    Donde $\omega_p$ es la frecuencia de corte del filtro. Por lo tanto se pueden obtener los valores de R y C mediante igualación. Ademas, k es la ganancia de lazo cerrado del circuito:
+    \[ k = 1+ \frac{r_2}{r_1}\]
+    
+    De la función de transferencia del filtro pasa bajo se tiene:
+    
+    \begin{equation}
+    	\frac{\omega_p}{Q_P}=\frac{3-k}{RC} = 3184
+    \end{equation}
+    
+    \begin{equation}
+    	\omega_p^2 =\frac{1}{(RC)^2} = 6.632 \cdot 10^7
+    \end{equation}
+    
+    Si se toma C=1 queda: $\omega_p = 1/R = 8143.71$.
+    
+    Y despejando R resulta: $R=1.23 \cdot 10^{-4} \Omega$.
+    
+    Ahora
+    \[Q_P = \frac{\omega_p}{3184} = 2.56 \] 
+    Con $Q_P$ se puede obtener k, para luego deducir $r_1$ y $r_2$:
+    \[\frac{\omega_p}{Q_P}=\frac{3-k}{RC} = (3-k)\omega_p \]
+    
+    Usando los valores mencionados de R y C:
+    \[k = 3- \frac{1}{Q_P}= 2.61\]
+    \[\Rightarrow r_2= 1.61 \cdot r_1\]
+    
+    Cambiando C a un valor más comercial, $C= 100nF$
+    \[R=1.23\cdot10^{-6} \cdot 10^6 = 1.23k\Omega \]
+    
+    Hay que evaluar la ganancia de la función de transferencia que tiene que valer
+    32840000. Calculándola:
+    \[k \cdot \omega_p^2 = 2.61 \cdot 8143.71^2 =173.1 \cdot 10^6 \neq 32840000 \]
+    
+    Para solucionar este problema se agrega un divisor resistivo que funcionará como atenuador de
+    la señal. Se tiene que tener en cuenta que la impedancia vista desde ese punto tiene que valer R y la atenuación tiene que ser:
+    
+    \[G_{atenuacion}= \frac{32840000}{173.1 \cdot 10^6 }= 0.19\]
+    
+    \[\frac{R_BR_A}{R_A + R_B} = R\]
+    
+    Resolviendo y simplificando quedan:
+    \[R_A= \frac{R}{G_{atenuacion}}= 6.47k\Omega\]
+    \[R_B= \frac{R}{1-G_{atenuacion}}= 1.52k\Omega \]
+    
+    Finalmente se obtienen los valores de los parámetros necesarios para conformar el filtro pasa bajo:
+    
+    \begin{itemize}
+    	\item $r_1 = 6.2k\Omega $
+    	\item $r_2 = 10 k\Omega $
+    	\item $R_1 = R_2 = 1.23k\Omega $
+    	\item $C_1 = C_2 = 100nF$
+    	\item $R_A = 6.47 k\Omega$
+    	\item $R_B = 1.52 k\Omega $
+    \end{itemize}
+    
+    \begin{figure}[h!]
+    	\centering
+    	\includegraphics[width=0.7\linewidth]{FPbajoLTS.png}
+    	\caption{Circuito pasa bajo con sus parámetros}
+    	\label{fig:esquematicoB}
+    \end{figure}   
+    
+   
+   \vspace{1em}
+   \subsubsection{Filtro pasa alto}
+   Para la síntesis del filtro pasa alto se utilizará el siguiente circuito:
+   
+    \begin{figure}[h!]
+   	 \centering
+     \includegraphics[width=0.5\linewidth]{esquemaFPAlto.png}
+   	 \caption{Esquema Salley-Key pasa alto}
+   	 \label{fig:esquematicoC}
+    \end{figure}
+    
+    \vspace{1em}
+    Analizando la malla de entrada del terminal positivo, se tiene la siguiente matriz:
+    \[
+    \begin{bmatrix}
+    	\frac{1}{R_2} + SC_2 & -SC2 \\
+    	-SC2 & {\frac{1}{R_1} + SC1_2 + SC_2} 
+    \end{bmatrix} * 
+    \begin{bmatrix}
+    	v^+ \\ v_x
+    \end{bmatrix} =
+    \begin{bmatrix}
+    	0 \\ SC_1V_{in} + \frac{1}{R_1}V_o
+    \end{bmatrix}
+    \]
+    Tomando R1=R2=R y C1=C2=C se obtiene:
+    
+    \begin{equation}
+    	A_{FB}=\frac{v^+}{v_{in}} = \frac{\frac{s}{RC}}{\frac{1}{(RC)^2}+ \frac{3s}{RC} + s^2}
+    \end{equation}
+    
+    La función de lazo abierto tiene la forma:
+    
+    \begin{equation}
+    	A_{FF}=\frac{v^+}{v_{o}} = \frac{s^2}{\frac{1}{(RC)^2}+ \frac{3s}{RC} + s^2}
+    \end{equation}
+    
+    Similar al filtro pasa bajo, la función de transferencia tiene la forma:
+    
+    \begin{equation}
+    	A(s)= \frac{k \cdot N_{FF}}{D- k\cdot N_{FB}} = \frac{k \cdot s^2}{\frac{1}{(RC)^2}+ \frac{(3-k)s}{RC} + s^2}
+    \end{equation}
+    
+    El denominador característico D es igual al filtro pasa bajo, junto con $N_{FB}$ y solo $N_{FF}$ cambia:
+    
+    \[N_{FF} = s^2 \]
+    
+    Por lo tanto, la función de transferencia final tiene la forma:
+    
+    \begin{equation}
+    	A(s)=\frac{k \cdot s^2}{s^2 + (3-k) \cdot \omega_p s + \omega_p^2}
+    \end{equation}
+    
+    Recordando que de la función de transferencia del pasa alto, y siguiendo los pasos que se cumplieron con el filtro pasa bajo para obtener R y C:
+    
+    \begin{equation}
+    	\frac{\omega_p}{Q_P}=\frac{3-k}{RC} = 1896
+    \end{equation}
+    
+    \begin{equation}
+    	\omega_p^2 =\frac{1}{(RC)^2} = 2.35 \cdot 10^7
+    \end{equation}
+    
+    Si se toma C=1 queda: $\omega_p = 1/R = 4847.7$.
+    
+    Y despejando R resulta: $R=2.06 \cdot 10^{-4} \Omega$.
+    
+    Ahora
+    \[Q_P = \frac{\omega_p}{1896} = 2.44 \] 
+    Con $Q_P$ se puede obtener k, para luego deducir $r_1$ y $r_2$:
+    \[\frac{\omega_p}{Q_P}=\frac{3-k}{RC} = (3-k)\omega_p \]
+    
+    Usando los valores mencionados de R y C:
+    \[k = 3- \frac{1}{Q_P}= 2.59\]
+    \[\Rightarrow r_2= 1.59 \cdot r_1\]
+    
+     Cambiando C a un valor más comercial, $C= 10nF$
+    \[R=2.06\cdot10^{-5} \cdot 100 \cdot 10^6 = 20.63k\Omega \]
+    
+    Hay que evaluar la ganancia de la función de transferencia que tiene que valer 0.5. Calculándola:
+    \[k = 2.59 \neq 0.5 \]
+    
+    La atenuación tiene que ser:
+    
+    \[G_{atenuacion}= \frac{0.5}{2.59}=0.19\]
+    
+    En lugar de agregar un divisor de tensión con capacitores que posean valores comerciales difíciles de conseguir, se opta por hacer uso de los amplificadores operacionales del mismo encapsulado LM324. Se utilizarán 2 amplificadores operacionales para formar el divisor de tensión, quedando el circuito de la siguiente manera:
+    
+    \begin{figure}[h!]
+    	\centering
+    	\includegraphics[width=1\linewidth]{ctoCompleto.png}
+    	\caption{Circuito completo final}
+    	\label{fig:esquematicoB}
+    \end{figure}
+    
+    \vspace{1em}
+    Finalmente se obtienen los valores de los parámetros necesarios para conformar el filtro pasa alto:
+    
+    \begin{itemize}
+    	\item $r_1 = 6.2k\Omega $
+    	\item $r_2 = 10 k\Omega $
+    	\item $R_1 = R_2 = 20.63k\Omega $
+    	\item $C_1 = C_2 = 10nF$
+    	\item $R_A = 6.47 k\Omega$
+    	\item $R_B = 1.52 k\Omega $
+    \end{itemize}   
+  
+  \vspace{1em}
+  \subsection{Simulación}
+  En este apartado se presentan las simulaciones realizadas en LTSpice para verificar el correcto
+  funcionamiento del circuito. Se mostrarán los resultados obtenidos de cada etapa y luego del circuito completo.
+  
+  \vspace{1em}
+  \subsubsection{Simulación filtro pasa bajo}
+  
+   Etapa pasa bajo con una entrada de 1Vpp y una frecuencia de 1kHz.
+   \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=0.8\linewidth]{bodePBajo.png}
+  	\caption{ Bode de la simulación de la etapa pasa bajo}
+  	\label{fig:esquematicoB}
+   \end{figure}
+  
+  \vspace{1em}
+  \subsubsection{Simulación filtro pasa alto}
+  
+   Al igual que el caso anterior, etapa pasa alto con una entrada de 1Vpp y una frecuencia de 1kHz.
+   
+   \begin{figure}[h!]
+   	\centering
+   	\includegraphics[width=0.8\linewidth]{bodePAlto.png}
+   	\caption{Bode de la simulación de la etapa pasa alto}
+   	\label{fig:esquematicoA}
+   \end{figure}
+   
+   \vspace{1em}
+    Se puede notar que al alcanzar los 1 MHz la ganancia cae abruptamente. Esto se debe a que el amplificador operacional LM324 tiene un ancho de banda de 1 MHz. Por lo tanto, para frecuencias mayores a 1 MHz el amplificador operacional no funciona correctamente.
+  
+  
+  \vspace{1em}
+  \subsubsection{Simulación filtro completo}
+  
+  Finalmente, con una entrada de 1Vpp y una frecuencia de 1kHz, el circuito completo muestra lo siguiente:
+  
+  \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=0.8\linewidth]{bodePBanda.png}
+  	\caption{ Bode de la simulación del circuito completo}
+  	\label{fig:esquematicoA}
+  \end{figure}
+  
+  Cabe destacar, que el circuito simulado cumple con los requerimientos especificados en la consigna y coincide con los cálculos teóricos realizados
+  
+  
+  \subsection{Cálculo de sensibilidad}
+  Se calcula la sensibilidad respecto a la frecuencia. Se desarrolla lo siguiente:
+  
+  \begin{equation}
+  	\omega_p = \sqrt{\frac{1}{R_1 R_2 C_1 C_2}}
+  \end{equation}
+  
+  Dado que la sensibilidad se calcula como:
+  
+  \begin{equation}
+  	\lim_{\Delta R_1 R_2 C_1 C_2\to0} \frac{ \frac{\Delta\omega_p}{\omega_p}}{ \frac{\Delta R_1 R_2 C_1 C_2}{R_1 R_2 C_1 C_2}}=\frac{R_1 R_2 C_1 C_2}{\omega_p} \cdot \frac{\partial \omega_p}{\partial R_1 R_2 C_1 C_2}
+  \end{equation}
+  
+  \begin{equation}
+  	(S_{R_1})^{\omega_p}=(S_{R_2})^{\omega_p}=(S_{C_1})^{\omega_p}=(S_{C_2})^{\omega_p}=-\frac{1}{2}
+  \end{equation}
+  
+  \hspace{1mm} Se tiene que ante una variación unitaria del valor de cualquier componente, se tiene una variación de la frecuencia a la mitad de su valor (0.5\%). Este concepto se aplica tanto para la topología del filtro pasa alto como para la topología del filtro pasa bajo.
+  
+  Para el ancho de banda se tiene:
+  
+  \begin{equation}
+  	\frac{\omega_p}{Q_p}= \frac{3-k}{RC}
+  \end{equation}
+  Se tiene que el valor de k, es dado por:
+  
+  \begin{equation}
+  	k= 1 + \frac{r_2}{r_1}
+  \end{equation}
+  Se reemplaza en la fórmula del ancho banda.
+  
+  \begin{equation}
+  	\frac{\omega_p}{Q_p}= \frac{2-\frac{r_2}{r_1}}{RC}
+  \end{equation}
+  
+  \begin{equation}
+  	S_{R, C, r_1, r_2}^{\frac{\omega_p}{Q_p}}= \lim_{\Delta R C r_1 r_2\to0} \frac{R C r_1 r_2}{\frac{\omega_p}{Q_p}} \cdot \frac{\frac{\omega_p}{Q_p}}{\partial R C r_1 r_2}
+  \end{equation}
+  
+  \begin{equation}
+  	S_{R}^{\frac{\omega_p}{Q_p}}= \frac{R}{\frac{2-\frac{r_2}{r_1}}{RC}} \cdot (-1) \space R^{-2} \frac{2-\Bigl(\frac{r_2}{r_1}\Bigl)}{C}
+  \end{equation}
+  
+  \begin{equation}
+  	S_{R}^{\frac{\omega_p}{Q_p}}= -2.56 \cdot (3-2.61) = -1.01
+  \end{equation} 
+  Además se tiene:
+  
+  \begin{equation}
+  	S_{C}^{\frac{\omega_p}{Q_p}}=  -2.56 \cdot (3-2.61) = -1.01
+  \end{equation}
+  
+  y
+  \begin{equation}
+  	S_{k}^{\frac{\omega_p}{Q_p}}= -2.61\cdot 2.56 = -6.7
+  \end{equation}
+  
+  
+  Finalmente, se deduce que la sensibilidad de $\omega_p/Q_P$ con respecto a R es -1.01, con respecto a C  es -1.01 y con respecto a k es -6.7. Y si algún componente varia un 1 \%, $\omega_p/Q_P$ variara un 1.01 \%, 1.01 \% y 6.7 \% respectivamente.
+  
+  
+  \vspace{1em}
+  \subsection{Análisis de la peor desviación de tolerancias}
+  Se pide realizar un análisis de la peor desviación de tolerancias de los componentes del circuito. Los peores casos son:
+   \begin{itemize}
+  	\item $r_1$ y $r_2$ aumentan su relación variando k y por lo tanto $\omega_p$ y  $\omega_p/Q_P$varían.
+  	\item C varía mayormente y por lo tanto $\omega_p$ y  $\omega_p/Q_P$varían.
+  	\item R varía a mayor valor y por lo tanto $\omega_p$ y  $\omega_p/Q_P$varían.
+  \end{itemize}
+  
+   \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=1\linewidth]{ctoCompleto.png}
+  	\caption{Circuito pasa banda con la peor desviación}
+  	\label{fig:esquematicoB}
+  \end{figure}
+  
+  El diagrama de Bode resultante es:
+  
+   \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=1\linewidth]{bodePeorDesv.png}
+  	\caption{Circuito completo final}
+  	\label{fig:esquematicoB}
+  \end{figure}
+  
+  \vspace{1em}  
+  En el diagrama se puede observar que la frecuencia de corte del pasa bajo y del pasa alto varían. Entonces, el ancho de banda también se modifica. Lo mas notable es la variación de la banda de paso es de 700 Hz  a 1400 Hz y no es uniforme en toda la banda. Y, por lo tanto, el filtro no cumple con todos los requisitos.
+  
+  
+  \vspace{1em}
+  \subsection{Simulación Montecarlo}
+  
+  En este apartado se realizara una simulación Montecarlo para verificar que el circuito cumpla con los requisitos especificados en la planilla de requerimientos y, observar como varía la frecuencia de corte y el ancho de banda del circuito dependiendo de las tolerancias de los componentes.
+  LTSpice ofrece la función que permite realizar una simulación de este tipo. En esta simulación se  puede variar la tolerancia de los componentes. En este caso se variara la tolerancia de los resistores y  capacitores. La tolerancia de los resistores es del 5 \% y la de los capacitores es del 10 \%. Ingresando estas tolerancias en los componentes y utilizando la función Montecarlo de LTSpice se obtiene lo siguiente:
+  
+  \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=1\linewidth]{montecralo1.png}
+  	\caption{Simulación Montecarlo}
+  	\label{fig:esquematicoB}
+  \end{figure}
+  
+  \vspace{1em}
+  Se realizaron decenas de simulaciones para observar como varía la frecuencia de corte y el ancho de banda. En la imagen podemos observar que la frecuencia de corte varia entre 700 Hz y 1400 Hz.
+  
+  \begin{figure}[h!]
+  	\centering
+  	\includegraphics[width=0.8\linewidth]{montecarlo3.png}
+  	\caption{ "Zoom " de la simulación Montecarlo}
+  	\label{fig:esquematicoA}
+  \end{figure}
+  
+  
+  \vspace{1em}
+  \section{Conclusiones}
+  
+  Para finalizar, se concluye que si bien el circuito no fue implementado de manera práctica, los valores simulados se asemejan correctamente a los requerimientos impuestos en el problema, además hay concordancia con los resultados obtenidos en Python.
+  
+  Se logró sintetizar un filtro pasabanda de 4to orden, el cual es complejo, mediante la conexión en cascada de dos filtros pasabanda de 2do orden, los cuales son más fáciles de manejar. Esto significa  que mediante filtros sencillos en sus formas bicuadráticas, se pueden sintetizar filtros mucho mas complejos. 
+  
+  
+%\end{document}
